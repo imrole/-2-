@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
+using System.Windows.Forms;
 
 namespace _4_3
 {
@@ -48,13 +50,13 @@ namespace _4_3
         /// </summary>
         /// <param name="subjects">科目</param>
         /// <returns></returns>
-        public static double GetMaxResult(int subjects)
+        public static double GetMaxResult(Enum.课程 subjects)
         {
             return subjects switch
             {
-                >= 1 and <= 1 => students.Max(a => a.ChineseResult),
-                >= 2 and <= 2 => students.Max(a => a.MathResult),
-                >= 3 and <= 3 => students.Max(a => a.EnglishResult),
+                Enum.课程.语文 => students.Max(a => a.ChineseResult),
+                Enum.课程.数学 => students.Max(a => a.MathResult),
+                Enum.课程.英语 => students.Max(a => a.EnglishResult),
                 _ => students.Max(a => a.AllResult)
             };
         }
@@ -103,15 +105,47 @@ namespace _4_3
         /// </summary>
         /// <param name="subjects">科目</param>
         /// <returns></returns>
-        public static List<Student> GetUnPassNames(int subjects)
+        public static List<Student> GetUnPassNames(Enum.课程 subjects)
         {
             return subjects switch
             {
-                >= 1 and <= 1 => students.FindAll(a => a.ChineseResult < 60),
-                >= 2 and <= 2 => students.FindAll(a => a.MathResult < 60),
-                >= 3 and <= 3 => students.FindAll(a => a.EnglishResult < 60),
+                Enum.课程.语文 => students.FindAll(a => a.ChineseResult < 60),
+                Enum.课程.数学 => students.FindAll(a => a.MathResult < 60),
+                Enum.课程.英语 => students.FindAll(a => a.EnglishResult < 60),
                 _ => students.FindAll(a => a.AllResult < 60)
             };
+        }
+
+        /// <summary>
+        /// 统计
+        /// </summary>
+        public static string Statistical(Enum.课程 subjects)
+        {
+            int[] a = new int[3];
+            switch (subjects)
+            {
+                case Enum.课程.语文:
+                    a[0] = (from student in students where student.ChineseResult < 60 select student).Count();
+                    a[1] = (from student in students where student.ChineseResult >= 60 && student.MathResult < 90 select student).Count();
+                    a[2] = (from student in students where student.ChineseResult > 90 select student).Count();
+                    break;
+                case Enum.课程.数学:
+                    a[0] = (from student in students where student.MathResult < 60 select student).Count();
+                    a[1] = (from student in students where student.MathResult >= 60 && student.MathResult < 90 select student).Count();
+                    a[2] = (from student in students where student.MathResult > 90 select student).Count();
+                    break;
+                case Enum.课程.英语:
+                    a[0] = (from student in students where student.EnglishResult < 60 select student).Count();
+                    a[1] = (from student in students where student.EnglishResult >= 60 && student.MathResult < 90 select student).Count();
+                    a[2] = (from student in students where student.EnglishResult > 90 select student).Count();
+                    break;
+                default:
+                    a[0] = (from student in students where student.AllResult < 60 select student).Count();
+                    a[1] = (from student in students where student.AllResult >= 60 && student.MathResult < 90 select student).Count();
+                    a[2] = (from student in students where student.AllResult > 90 select student).Count();
+                    break;
+            }
+            return "\n60以下：" + a[0]/(double)students.Count()*100 + "%" + "\n60至90：" + a[1] / (double)students.Count()*100 + "%" + "\n90以上：" + a[2] / (double)students.Count()*100+"%";
         }
 
     }

@@ -62,18 +62,24 @@ namespace _4_3
         private void button2_Click(object sender, EventArgs e)
         {
             LabelDispose();
+            //平均成绩
             label6.Text += Grade.GetAverResult();
-            label7.Text += Grade.GetMaxResult(Convert.ToInt32(Enum.课程.语文));
+            //课程最高分
+            label7.Text += Grade.GetMaxResult(Enum.课程.语文);
+            //课程前三
             List<Student> firstTreeStudent = Grade.GetFirstThreeStudents();
             foreach (var student in firstTreeStudent)
             {
                 label8.Text += student.StudentName+ " ";
             }
-            List<Student> unstudents = Grade.GetUnPassNames(Convert.ToInt32(Enum.课程.语文));
+            //不及格名单
+            List<Student> unstudents = Grade.GetUnPassNames(Enum.课程.语文);
             foreach (var unstudent in unstudents)
             {
                 label9.Text += unstudent.StudentName + " ";
             }
+            //统计百分比
+            label10.Text += Grade.Statistical(Enum.课程.语文);
         }
 
         /// <summary>
